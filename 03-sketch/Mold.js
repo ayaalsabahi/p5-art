@@ -1,17 +1,17 @@
 class Mold{
     constructor(){
         this.r = 0.5; //radius of the mold
-        this.x = random(width);
-        this.y = random(height);
+        this.x = width/2; 
+        this.y = height/2;
         this.heading = random(360); //angle to where it is heading in
         this.rotAngle = 45; //rotation angle of the thingy
         this.vx = cos(this.heading);
-        this.vy = sin(this.heading ); 
+        this.vy = sin(this.heading); 
         this.rSensorPos = createVector(); //right sensor pos    
         this.lSensorPos = createVector(); //left sensor pos
         this.mSensorPos = createVector(); //middle sensor pos
         this.sensorAngle = 45; 
-        this.sensorDistance = 10; 
+        this.sensorDistance = 5; 
         
     }
 
@@ -31,16 +31,22 @@ class Mold{
         this.x = this.x + this.vx; 
         this.y = this.y + this.vy; 
 
-        this.rSensorPos.x = this.x + this.sensorDistance*cos(this.heading + this.sensorAngle); //+ sensor angle
-        this.rSensorPos.y = this.y + this.sensorDistance*sin(this.heading + this.sensorAngle);
-        
-        this.lSensorPos.x = this.x + this.sensorDistance*cos(this.heading - this.sensorAngle);//- sensor angle
-        this.lSensorPos.y = this.y + this.sensorDistance*sin(this.heading - this.sensorAngle);
+        this.getSensorPos(this.rSensorPos, this.heading + this.sensorAngle); 
+        this.getSensorPos(this.lSensorPos, this.heading - this.sensorAngle); 
+        this.getSensorPos(this.mSensorPos, this.heading); 
 
-        this.mSensorPos.x = this.x + this.sensorDistance*cos(this.heading); //just straight up in the middle
-        this.mSensorPos.y = this.y + this.sensorDistance*sin(this.heading);
+        //sensing/detecting the background for the different sensors
+        this.detectBackground();
+    }
 
-        //sensing/detecting the background
+
+    //get sensor position
+    getSensorPos(sensor, angle){
+        sensor.x = (this.x + this.sensorDistance*cos(angle) + width) % width; //+ sensor angle
+        sensor.y = (this.y + this.sensorDistance*sin(angle) + height) % height;
+    }
+
+    detectBackground(){
         let index, l, r, m;  
         index = 4*(d * floor(this.rSensorPos.y)) * (d * width) + 4*(d * floor(this.rSensorPos.x)); //using 4 due to the offset of the array 
         r = pixels[index]; 
@@ -48,8 +54,6 @@ class Mold{
         l = pixels[index]; 
         index = 4*(d * floor(this.mSensorPos.y)) * (d * width) + 4*(d * floor(this.mSensorPos.x)); 
         m = pixels[index]; 
-        
-
         //here we will check conditions of where to head to 
         if(m > l && m > l){
             this.heading+=0; //no change in angle direction, continue going where you are
@@ -65,10 +69,8 @@ class Mold{
         else if(r > l){
             this.heading += this.rotAngle;
         }
-
-        
-
     }
+    //testing code
     visualizeSensor(){
     fill(255,0,0);
     line(this.x, this.y, this.r * 5 * this.vx + this.x , this.r * 5 *this.vy + this.y );
