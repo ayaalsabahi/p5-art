@@ -1,6 +1,6 @@
 class Mold{
     constructor(){
-        this.r = 10; //radius of the mold
+        this.r = 0.5; //radius of the mold
         this.x = random(width);
         this.y = random(height);
         this.heading = random(360); //angle to where it is heading in
@@ -11,20 +11,17 @@ class Mold{
         this.lSensorPos = createVector(); //left sensor pos
         this.mSensorPos = createVector(); //middle sensor pos
         this.sensorAngle = 45; 
-        this.sensorDistance = this.r * 10; 
+        this.sensorDistance = 10; 
         
     }
 
 
     display(){
-        fill(0);
+        fill(255);
+        noStroke();
         ellipse(this.x, this.y, this.r * 2, this.r * 2);
-        line(this.x, this.y, this.r * 5 * this.vx + this.x , this.r * 5 *this.vy + this.y );
-
-        fill(255,0,0);
-        ellipse(this.rSensorPos.x, this.rSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
-        ellipse(this.lSensorPos.x, this.lSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
-        ellipse(this.mSensorPos.x, this.mSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
+    //    this.visualizeSensor();
+       
     }
 
     update(){
@@ -69,6 +66,14 @@ class Mold{
             this.heading += this.rotAngle;
         }
 
+        
 
     }
+    visualizeSensor(){
+    fill(255,0,0);
+    line(this.x, this.y, this.r * 5 * this.vx + this.x , this.r * 5 *this.vy + this.y );
+    ellipse(this.rSensorPos.x, this.rSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
+    ellipse(this.lSensorPos.x, this.lSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
+    ellipse(this.mSensorPos.x, this.mSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
+   }
 }
