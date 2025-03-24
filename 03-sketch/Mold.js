@@ -1,8 +1,9 @@
 class Mold{
+   
     constructor(){
         this.r = 0.5; //radius of the mold
-        this.x = width/2; 
-        this.y = height/2;
+        this.x = random(width);
+        this.y = random(height);
         this.heading = random(360); //angle to where it is heading in
         this.rotAngle = 45; //rotation angle of the thingy
         this.vx = cos(this.heading);
@@ -11,13 +12,16 @@ class Mold{
         this.lSensorPos = createVector(); //left sensor pos
         this.mSensorPos = createVector(); //middle sensor pos
         this.sensorAngle = 45; 
-        this.sensorDistance = 5; 
+        this.sensorDistance = 10; 
+        this.slimeColor = color(255,255,255); 
+        this.isHeading = false; 
         
     }
 
 
     display(){
-        fill(255);
+        // fill(floor(random(0,255)),random(0,255),random(0,255));
+        fill(this.slimeColor);
         noStroke();
         ellipse(this.x, this.y, this.r * 2, this.r * 2);
     //    this.visualizeSensor();
@@ -36,7 +40,8 @@ class Mold{
         this.getSensorPos(this.mSensorPos, this.heading); 
 
         //sensing/detecting the background for the different sensors
-        this.detectBackground();
+        this.detectDirection();
+        
     }
 
 
@@ -46,7 +51,10 @@ class Mold{
         sensor.y = (this.y + this.sensorDistance*sin(angle) + height) % height;
     }
 
-    detectBackground(){
+   
+
+    
+    detectDirection(){
         let index, l, r, m;  
         index = 4*(d * floor(this.rSensorPos.y)) * (d * width) + 4*(d * floor(this.rSensorPos.x)); //using 4 due to the offset of the array 
         r = pixels[index]; 
@@ -55,24 +63,43 @@ class Mold{
         index = 4*(d * floor(this.mSensorPos.y)) * (d * width) + 4*(d * floor(this.mSensorPos.x)); 
         m = pixels[index]; 
         //here we will check conditions of where to head to 
-        if(m > l && m > l){
-            this.heading+=0; //no change in angle direction, continue going where you are
+
+        //if the position of the mouse is anwhere within the radius
+        //AND if I am not heading out already 
+        //THEN reverse directions
+        let mouseDist = dist(this.x, this.y, mouseX, mouseY); 
+        if(mouseDist <= mouseRadius && !this.isHeading){
+            this.isHeading= true; 
+            this.heading -= 180 + random(-10, 10);
         }
-        else if(m < l && m < r){
-             if(random(1) < 0.5){
-                this.heading+= this.rotAngle; 
-             }
+        else{this.isHeading = false;}
+
+        //if I'm not already heading out
+        if(!this.isHeading){
+            if(m > l && m > l){
+                this.heading+=0; //no change in angle direction, continue going where you are    
+            }
+            else if(m < l && m < r){
+                 if(random(1) < 0.5){ //random choice
+                    this.heading+= this.rotAngle; 
+                 }
+            }
+            else if(l > r){
+                this.heading -= this.rotAngle; //go left   
+            }
+            else if(r > l){
+                this.heading += this.rotAngle;//go right
+               
+            }
+            
         }
-        else if(l > r){
-            this.heading -= this.rotAngle;
-        }
-        else if(r > l){
-            this.heading += this.rotAngle;
-        }
+
     }
+
     //testing code
     visualizeSensor(){
-    fill(255,0,0);
+    
+    fill(255);
     line(this.x, this.y, this.r * 5 * this.vx + this.x , this.r * 5 *this.vy + this.y );
     ellipse(this.rSensorPos.x, this.rSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor
     ellipse(this.lSensorPos.x, this.lSensorPos.y,this.r * 2, this.r * 2); //visualualizing the sensor

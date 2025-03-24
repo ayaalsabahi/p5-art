@@ -53,7 +53,7 @@ function displayblocks(){
       block.forward = false;
       stroke(220);
       fill(220);
-      strokeWeight(1.2);
+      strokeWeight(1.);
       rect(block.x, block.y, block.h, block.w);
       block.d -=1; 
     }

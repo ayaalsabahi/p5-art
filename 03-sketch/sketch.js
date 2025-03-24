@@ -6,10 +6,11 @@ Blogpost: https://cargocollective.com/sagejenson/physarum */
 let m; 
 let d; 
 let molds = []; 
-let numMolds = 4000; 
+let numMolds = 1000; 
+let mouseRadius = 50; //max distance for the mouse
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(1000, 1000);
   angleMode(DEGREES); 
   d =  pixelDensity();
 
@@ -19,7 +20,6 @@ function setup() {
   }
   
 }
-
 function draw() {
   background(0, 5);
   loadPixels();
